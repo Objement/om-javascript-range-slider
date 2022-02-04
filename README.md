@@ -17,7 +17,7 @@ The colors are changable by overwriting the CSS classes.
 
 This should work on every browser that supports the ES2015 JavaScript Standard.
 
-Testet so far:
+Tested so far:
 - iOS 15 Safari
 - Chromium v98 (Chrome, Brave ...)
 
@@ -28,29 +28,29 @@ Testet so far:
 3. Load these files within your HTML as follows:
 ````HTML
 <html>
-	<head>
-		...
-		<link rel="stylesheet" href="/assets/om-javascript-range-slider.css">
-	</head>
-	<body>
-		...
+    <head>
+        ...
+        <link rel="stylesheet" href="/assets/om-javascript-range-slider.css">
+    </head>
+    <body>
+        ...
 	
-		<script src="/assets/om-javascript-range-slider.js"></script>
-	<body>
+        <script src="/assets/om-javascript-range-slider.js"></script>
+    <body>
 </html>
 ````
 4. Initialize the library by adding another `<script>`-block containing the following code:
 ````HTML
 ...
-	<body>
-		...
+    <body>
+        ...
 	
-		<script src="/assets/om-javascript-range-slider.js"></script>
+        <script src="/assets/om-javascript-range-slider.js"></script>
 		
-		<script>
-			OmRangeSlider.init();
-		</script>
-	<body>
+        <script>
+            OmRangeSlider.init();
+        </script>
+    <body>
 
 ````
 5. Add a range-input somewhere to your `<body>`:
