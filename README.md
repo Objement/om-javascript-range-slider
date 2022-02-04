@@ -1,4 +1,4 @@
-# Vanilla JavaScript Range-Slider (two buttons to define start and end of the range)
+# Vanilla JavaScript Range-Slider with two Buttons
 This is a really simple to include and to use range slider, implemented in Vanilla JavaScript without the need for any libraries. Just use a range-input, set the attribute "multiple" to it and load the .js- and .css-files. Everything should be fine.
 
 You can set the `min`- and `max`-attributes to the input field to define the maximum range.
@@ -69,11 +69,11 @@ To get the range as an array, you should use the following code:
 
 $range = isset($_POST['percent_range']) && count(explode(',', $_POST['percent_range'])) == 2
              ? array_map(function($value) {
-			     $value = filter_var(trim($value), FILTER_VALIDATE_INT, array('flags' => FILTER_NULL_ON_FAILURE));
-				 return $value;
-			 }, explode(',', $_POST['percent_range']))
-			 : NULL;
-			 
+                 $value = filter_var(trim($value), FILTER_VALIDATE_INT, array('flags' => FILTER_NULL_ON_FAILURE));
+                 return $value;
+             }, explode(',', $_POST['percent_range']))
+             : NULL;
+
 var_dump($range);
 // Result is:
 // array(2) {
