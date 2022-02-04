@@ -2,7 +2,6 @@ function OmRangeSlider(inputSelector) {
 	const that = this;
 
 	let input = undefined;
-	let element = undefined;
 	let elementRange = undefined;
 	let buttonStart = undefined;
 	let buttonEnd = undefined;
@@ -123,7 +122,6 @@ function OmRangeSlider(inputSelector) {
 
 		visualSliderButtonEnd.style.left = (visualSliderRange.getBoundingClientRect().width - visualSliderButtonEnd.getBoundingClientRect().width) + 'px';
 
-		element = visualSliderContainer;
 		elementRange = visualSliderRange;
 		buttonStart = visualSliderButtonStart;
 		buttonEnd = visualSliderButtonEnd;
@@ -136,10 +134,13 @@ function OmRangeSlider(inputSelector) {
 			? input.getAttribute('max') : 10;
 		settings.unit = input.getAttribute('unit') ?? '';
 
-		that.setRange([settings.min, settings.max]);
-		refreshButtonPositions();
-
 		input.type = 'hidden';
+
+		const range = input.value ? input.value.split(',').map(x => +x.trim()) : undefined;
+
+		that.setRange([range[0] ?? settings.min, range[1] ?? settings.max]);
+		refreshButtonPositions();
+		refreshRangeIndicator();
 	}
 
 	function refreshButtonPositions() {
@@ -282,8 +283,8 @@ function OmRangeSlider(inputSelector) {
 
 OmRangeSlider.init = function (selector = 'input[type=range][multiple]') {
 	const rangeSliders = document.querySelectorAll(selector);
-	for (let i = 0; i < rangeSliders.length; i++) {
-		(new OmRangeSlider(rangeSliders[i]))
+	for (const rangeSlider of rangeSliders) {
+		(new OmRangeSlider(rangeSlider))
 			.setDebug(false)
 			.initialize();
 	}
