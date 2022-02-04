@@ -1,7 +1,9 @@
-# Vanilla JavaScript Range-Slider
-This is a really simple to include and to use range slider implemented in Vanilla JavaScript without the need for any libraries. Just use a range-input and set the attribute "multiple" to it and load the .js- and .css-files. Everything should be fine.
+# Vanilla JavaScript Range-Slider (two buttons to define start and end of the range)
+This is a really simple to include and to use range slider, implemented in Vanilla JavaScript without the need for any libraries. Just use a range-input, set the attribute "multiple" to it and load the .js- and .css-files. Everything should be fine.
 
-You can set the min and max values for the input field. As a result, you will get a two values (start and end) for the range, separated by a comma.
+You can set the `min`- and `max`-attributes to the input field to define the maximum range.
+
+The result in the `value`-attribute will be two values (start and end) for the range, separated by a comma.
 
 ## How will it look like?
 
@@ -53,5 +55,35 @@ Testet so far:
 ````
 5. Add a range-input somewhere to your `<body>`:
 ````HTML
-<input name="percent_range" type="hidden" multiple="multiple" min="5" max="100" unit="%" value="">
+<input name="percent_range" type="range" multiple="multiple" min="5" max="100" unit="%" value="">
+````
+
+## Usage
+
+### Serverside PHP:
+
+To get the range as an array, you should use the following code:
+
+````PHP
+// Will look like this: $_POST['percent_range'] = '1,333';
+
+$range = isset($_POST['percent_range']) && count(explode(',', $_POST['percent_range'])) == 2
+             ? array_map(function($value) {
+			     $value = filter_var(trim($value), FILTER_VALIDATE_INT, array('flags' => FILTER_NULL_ON_FAILURE));
+				 return $value;
+			 }, explode(',', $_POST['percent_range']))
+			 : NULL;
+			 
+var_dump($range);
+// Result is:
+// array(2) {
+//  [0] => int(1)
+//  [1] => int(333)
+// }
+````
+
+To set the value to the input via PHP, just use implode for an array containing two values:
+
+````HTML
+<input name="percent_range" type="range" multiple="multiple" min="5" max="100" unit="%" value="<?php echo implode(',', [5,85]); ?>">
 ````
