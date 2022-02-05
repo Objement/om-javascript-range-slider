@@ -9,9 +9,13 @@ The result in the `value`-attribute will be two values (start and end) for the r
 
 It will look like that:
 
-![Screenshot](/doc/screenshot.png?raw=true "Screenshot of the control")
+![Screenshot](/docs/screenshot.png?raw=true "Screenshot of the control")
 
 The colors are changable by overwriting the CSS classes.
+
+You can see an working example of the control on the following page:
+
+https://objement.github.io/om-javascript-range-slider/
 
 ## Supported Browser
 
