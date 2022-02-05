@@ -13,9 +13,7 @@ It will look like that:
 
 The colors are changable by overwriting the CSS classes.
 
-You can see an working example of the control on the following page:
-
-https://objement.github.io/om-javascript-range-slider/
+You can see an working example of the control by opening the `docs/example.html`.
 
 ## Supported Browser
 
