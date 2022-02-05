@@ -32,11 +32,11 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 		displayValueStart.textContent = range[0] + settings.unit;
 		displayValueEnd.textContent = range[1] + settings.unit;
 		triggerRangeChangeEvent(range);
-		
+
 		switch (settings.inputValueStyle) {
 			default:
 			case OmRangeSliderInputValueStyles.DEFAULT_COMMA_SEPARATED:
-			    input.value = rangeValue.join(',');
+				input.value = rangeValue.join(',');
 				break;
 			case OmRangeSliderInputValueStyles.PHP_ARRAY:
 			case OmRangeSliderInputValueStyles.ASP_ARRAY:
@@ -152,7 +152,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 
 		input.type = 'hidden';
 
-		const range = input.value ? input.value.split(',').map(x => +x.trim()) : undefined;
+		const range = input.value ? input.value.split(',').map(x => +x.trim()) : [settings.min, settings.max];
 
 		switch (settings.inputValueStyle) {
 			default:
@@ -182,16 +182,16 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 		const elementRangeWidth = elementRange.getBoundingClientRect().width;
 		const buttonStartWidth = buttonStart.getBoundingClientRect().width;
 		const buttonEndWidth = buttonEnd.getBoundingClientRect().width;
-		
+
 		const range = settings.max - settings.min;
 		const factor = (elementRangeWidth - buttonStartWidth - buttonEndWidth) / range;
-		
+
 		const valueStart = rangeValue[0] - settings.min;
 		const valueEnd = rangeValue[1] - settings.min;
-		
+
 		const buttonStartLeft = Math.floor(valueStart * factor);
 		const buttonEndLeft = buttonStartWidth + Math.floor(valueEnd * factor);
-		
+
 		buttonStart.style.left = buttonStartLeft + 'px';
 		buttonEnd.style.left = buttonEndLeft + 'px';
 	}
@@ -200,7 +200,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 		const elementRangeWidth = elementRange.getBoundingClientRect().width;
 		const buttonStartWidth = buttonStart.getBoundingClientRect().width;
 		const buttonEndWidth = buttonEnd.getBoundingClientRect().width;
-		
+
 		const buttonStartMiddle = Math.round(parseInt(buttonStart.style.left) + (buttonStartWidth / 2));
 		const buttonEndMiddle =  Math.round(elementRangeWidth - (parseInt(buttonEnd.style.left) + (buttonEndWidth / 2)));
 		rangeIndicator.style.left = buttonStartMiddle + 'px';
@@ -210,7 +210,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 	function triggerRangeChangeEvent(range) {
 		const event = new CustomEvent('rangechange', { detail: rangeValue });
 		input.value = this.range ? this.range.join(',') : '';
-		input.dispatchEvent(event); 
+		input.dispatchEvent(event);
 	}
 
 	function updateValues() {
