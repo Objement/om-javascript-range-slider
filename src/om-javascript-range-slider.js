@@ -1,7 +1,14 @@
-function OmRangeSlider(inputSelector) {
+const OmRangeSliderInputValueStyles = {
+	DEFAULT_COMMA_SEPARATED: 0,
+	PHP_ARRAY: 1,
+	ASP_ARRAY: 2
+}
+
+function OmRangeSlider(inputElement, inputValueStyle) {
 	const that = this;
 
-	let input = undefined;
+	let input = inputElement;
+	let inputValueEnd = undefined;
 	let elementRange = undefined;
 	let buttonStart = undefined;
 	let buttonEnd = undefined;
@@ -13,19 +20,30 @@ function OmRangeSlider(inputSelector) {
 
 	let debug = false;
 
-	this.settings = {
+	let settings = {
 		min: 0,
 		max: 10,
-		unit: ''
+		unit: '',
+		inputValueStyle: inputValueStyle
 	};
-	const settings = this.settings;
 
 	this.setRange = function (range) {
 		rangeValue = range;
 		displayValueStart.textContent = range[0] + settings.unit;
 		displayValueEnd.textContent = range[1] + settings.unit;
 		triggerRangeChangeEvent(range);
-		input.value = rangeValue.join(',');
+		
+		switch (settings.inputValueStyle) {
+			default:
+			case OmRangeSliderInputValueStyles.DEFAULT_COMMA_SEPARATED:
+			    input.value = rangeValue.join(',');
+				break;
+			case OmRangeSliderInputValueStyles.PHP_ARRAY:
+			case OmRangeSliderInputValueStyles.ASP_ARRAY:
+				input.value = rangeValue[0];
+				inputValueEnd.value = rangeValue[1];
+				break;
+		}
 		return that;
 	};
 
@@ -70,9 +88,7 @@ function OmRangeSlider(inputSelector) {
 		}, {passive: false});
 	}
 
-	function initVisuals(inputElement) {
-
-		input = inputElement;
+	function initVisuals() {
 
 		const visualSliderContainer = document.createElement('div');
 		visualSliderContainer.className = input.className;
@@ -138,27 +154,63 @@ function OmRangeSlider(inputSelector) {
 
 		const range = input.value ? input.value.split(',').map(x => +x.trim()) : undefined;
 
+		switch (settings.inputValueStyle) {
+			default:
+			case OmRangeSliderInputValueStyles.DEFAULT_COMMA_SEPARATED:
+				break;
+			case OmRangeSliderInputValueStyles.PHP_ARRAY:
+				inputValueEnd = document.createElement('input');
+				inputValueEnd.hidden = true;
+				inputValueEnd.name = input.name + '[]';
+				input.parentNode.insertBefore(inputValueEnd, input.nextSibling);
+				input.name = input.name + '[]';
+				break;
+			case OmRangeSliderInputValueStyles.ASP_ARRAY:
+				inputValueEnd = document.createElement('input');
+				inputValueEnd.hidden = true;
+				inputValueEnd.name = input.name;
+				input.parentNode.insertBefore(inputValueEnd, input.nextSibling);
+				break;
+		}
+
 		that.setRange([range[0] ?? settings.min, range[1] ?? settings.max]);
 		refreshButtonPositions();
 		refreshRangeIndicator();
 	}
 
 	function refreshButtonPositions() {
+		const elementRangeWidth = elementRange.getBoundingClientRect().width;
+		const buttonStartWidth = buttonStart.getBoundingClientRect().width;
+		const buttonEndWidth = buttonEnd.getBoundingClientRect().width;
+		
 		const range = settings.max - settings.min;
-
-		buttonStart.style.left = Math.round((rangeValue[0] - settings.min) * elementRange.clientWidth / range) + 'px';
-		buttonEnd.style.left = Math.round(((rangeValue[1] - settings.min) * elementRange.clientWidth / range) - buttonEnd.clientWidth) + 'px';
+		const factor = (elementRangeWidth - buttonStartWidth - buttonEndWidth) / range;
+		
+		const valueStart = rangeValue[0] - settings.min;
+		const valueEnd = rangeValue[1] - settings.min;
+		
+		const buttonStartLeft = Math.floor(valueStart * factor);
+		const buttonEndLeft = buttonStartWidth + Math.floor(valueEnd * factor);
+		
+		buttonStart.style.left = buttonStartLeft + 'px';
+		buttonEnd.style.left = buttonEndLeft + 'px';
 	}
 
 	function refreshRangeIndicator() {
-		rangeIndicator.style.left = parseInt(buttonStart.style.left) + (buttonStart.getBoundingClientRect().width / 2) + 'px';
-		rangeIndicator.style.right = elementRange.getBoundingClientRect().width - parseInt(buttonEnd.style.left) - (buttonEnd.getBoundingClientRect().width / 2);
+		const elementRangeWidth = elementRange.getBoundingClientRect().width;
+		const buttonStartWidth = buttonStart.getBoundingClientRect().width;
+		const buttonEndWidth = buttonEnd.getBoundingClientRect().width;
+		
+		const buttonStartMiddle = Math.round(parseInt(buttonStart.style.left) + (buttonStartWidth / 2));
+		const buttonEndMiddle =  Math.round(elementRangeWidth - (parseInt(buttonEnd.style.left) + (buttonEndWidth / 2)));
+		rangeIndicator.style.left = buttonStartMiddle + 'px';
+		rangeIndicator.style.right = buttonEndMiddle + 'px';
 	}
 
 	function triggerRangeChangeEvent(range) {
-		const event = new CustomEvent('rangechange', range);
+		const event = new CustomEvent('rangechange', { detail: rangeValue });
 		input.value = this.range ? this.range.join(',') : '';
-		input.dispatchEvent(event);
+		input.dispatchEvent(event); 
 	}
 
 	function updateValues() {
@@ -236,8 +288,8 @@ function OmRangeSlider(inputSelector) {
 
 				if (newX !== parseInt(activeButton.style.left)) {
 					activeButton.style.left = newX + 'px';
-					refreshRangeIndicator();
 					updateValues();
+					refreshRangeIndicator();
 				}
 			}
 		}
@@ -276,15 +328,22 @@ function OmRangeSlider(inputSelector) {
 	}
 
 	this.initialize = function () {
-		initVisuals(inputSelector);
+		initVisuals();
 		initEventSubscriptions();
 	};
 }
 
-OmRangeSlider.init = function (selector = 'input[type=range][multiple]') {
-	const rangeSliders = document.querySelectorAll(selector);
+OmRangeSlider.init = function (settings) {
+
+	const defaultSettings = {
+		selector: 'input[type=range][multiple]',
+		inputValueStyle: OmRangeSliderInputValueStyles.DEFAULT_COMMA_SEPARATED
+	};
+	settings = settings ? Object.assign(defaultSettings, settings) : defaultSettings;
+
+	const rangeSliders = document.querySelectorAll(settings.selector);
 	for (const rangeSlider of rangeSliders) {
-		(new OmRangeSlider(rangeSlider))
+		(new OmRangeSlider(rangeSlider, settings.inputValueStyle))
 			.setDebug(false)
 			.initialize();
 	}

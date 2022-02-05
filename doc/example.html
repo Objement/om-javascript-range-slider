@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="../src/om-javascript-range-slider.css">
+</head>
+<body>
+
+	<input type="range" name="pieces" id="inputPieces" multiple value="15,90" min="5" max="235" unit=" Pcs." style="width: 250px">
+	
+	<div>
+		<h4>Example get value by event in JavaScript</h4>
+		<span id="displaySelectedRange"></id>
+	</div>
+
+	<script>
+		// Example to subscribe to range changes
+		document.getElementById('inputPieces').addEventListener('rangechange', function(e) {
+			document.getElementById('displaySelectedRange').innerText = e.detail.join(' - ');
+		}, true);
+	</script>
+	
+	<script src="../src/om-javascript-range-slider.js"></script>
+	<script>
+		OmRangeSlider.init({ inputValueStyle: OmRangeSliderInputValueStyles.PHP_ARRAY });
+	</script>
+
+</body>
+</html>
