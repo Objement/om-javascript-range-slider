@@ -1,3 +1,5 @@
+'use strict'
+
 const OmRangeSliderInputValueStyles = {
     DEFAULT_COMMA_SEPARATED: 0,
     PHP_ARRAY: 1,
@@ -77,9 +79,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 
         const visualSliderContainer = document.createElement('div');
         visualSliderContainer.className = input.className;
-        for (const stylePropertyName in input.style) {
-            visualSliderContainer.style[stylePropertyName] = input.style[stylePropertyName];
-        }
+
         if (!visualSliderContainer.style.height) {
             visualSliderContainer.style.height = input.offsetHeight + 'px';
         }
@@ -200,7 +200,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
 
     function triggerRangeChangeEvent(range) {
         const event = new CustomEvent('rangechange', {detail: rangeValue});
-        input.value = this.range ? this.range.join(',') : '';
+        input.value = range ? range.join(',') : '';
         input.dispatchEvent(event);
     }
 
