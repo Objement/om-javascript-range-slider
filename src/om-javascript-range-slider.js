@@ -160,7 +160,11 @@ function OmRangeSlider(inputElement, inputValueStyle) {
                 break;
         }
 
-        that.setRange([range[0] ?? settings.min, range[1] ?? settings.max]);
+        const rangeStart = range[0] && range[0] >= settings.min && range[0] <= settings.max
+            ? range[0] : settings.min;
+        const rangeEnd = range[1] && range[1] >= settings.min && range[1] <= settings.max
+            ? range[1] : settings.max;
+        that.setRange([rangeStart, rangeEnd]);
         refreshButtonPositions();
         refreshRangeIndicator();
     }
@@ -201,7 +205,7 @@ function OmRangeSlider(inputElement, inputValueStyle) {
     }
 
     function updateValues() {
-        const rangePx = elementRange.offsetWidth - buttonStart.offsetWidth - buttonEnd.offsetWidth;
+        const rangePx = elementRange.offsetWidth - buttonStart.offsetWidth - buttonEnd.offsetWidth - 1;
         const startPx = parseInt(buttonStart.style.left);
         const endPx = parseInt(buttonEnd.style.left) - buttonEnd.offsetWidth;
 
